@@ -1,0 +1,360 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 07/10/2020 21:17:04 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.01
+OBJECT MODULE PLACED IN main.OBJ
+ASSEMBLER INVOKED BY: C:\Softwares\Keil\C51\BIN\A51.EXE main.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0000H
+0000 75B0FF            2     S: MOV P3,#0FFH
+0003 C2B0              3        CLR P3.0
+0005 C2B1              4        CLR P3.1
+0007 C2B2              5        CLR P3.2
+0009 C2B3              6        CLR P3.3
+000B C2A2              7        CLR P2.2
+000D 782F              8        MOV R0,#02FH         ;Input Password is Stored at 030H in memory
+000F 7940              9        MOV R1,#040H         ;Preset Password is Stored at 040H in memory
+0011 7C04             10        MOV R4,#4
+0013 900550           11        MOV DPTR,#0550H
+0016 7400             12     Z: MOV A,#0
+0018 93               13        MOVC A,@A+DPTR
+0019 F7               14        MOV @R1,A
+001A 09               15        INC R1
+001B A3               16        INC DPTR
+001C DCF8             17        DJNZ R4,Z
+                      18     
+001E 7438             19        MOV A,#38H  
+0020 1132             20        ACALL CMD
+0022 740E             21        MOV A,#0EH
+0024 1132             22        ACALL CMD                                                                               
+                                                                                                                        
+                                                                                                                                               
+0026 7401             23        MOV A,#01H
+0028 1132             24        ACALL CMD
+002A 7480             25        MOV A,#080H
+002C 1132             26        ACALL CMD
+002E 1148             27        ACALL DEL
+0030 8028             28        SJMP PRT
+                      29     
+0032 F590             30     CMD: MOV P1,A
+0034 C2A0             31              CLR P2.0
+0036 D2A1             32              SETB P2.1
+0038 1151             33              ACALL DEL2
+003A C2A1             34              CLR P2.1
+003C 22               35              RET
+                      36     
+003D F590             37     DAT: MOV P1,A
+003F D2A0             38          SETB P2.0                   
+0041 D2A1             39              SETB P2.1
+0043 1151             40              ACALL DEL2
+0045 C2A1             41              CLR P2.1
+0047 22               42              RET
+                      43     
+                      44     
+0048 79FA             45     DEL: MOV R1,#250
+004A 7AFA             46     D2: MOV R2,#250
+004C DAFE             47     D3: DJNZ R2,D3
+004E D9FA             48             DJNZ R1,D2
+0050 22               49             RET
+                      50     
+                      51     
+0051 790A             52     DEL2: MOV R1,#10
+0053 7A14             53     D22: MOV R2,#20
+0055 DAFE             54     D33: DJNZ R2,D33
+0057 D9FA             55             DJNZ R1,D22
+0059 22               56             RET
+A51 MACRO ASSEMBLER  MAIN                                                                 07/10/2020 21:17:04 PAGE     2
+
+                      57             
+005A 7C0B             58     PRT:MOV R4,#11          
+005C 900500           59             MOV DPTR,#0500H
+005F 7400             60     TH: MOV A,#0
+0061 93               61             MOVC A,@A+DPTR
+0062 113D             62             ACALL DAT
+0064 A3               63             INC DPTR
+0065 DCF8             64             DJNZ R4,TH
+0067 74C0             65             MOV A,#0C0H
+0069 1132             66             ACALL CMD
+006B 7C04             67             MOV R4,#4
+006D 8000             68             SJMP M
+                      69     
+006F 1148             70     M:  ACALL DEL
+0071 30B410           71         JNB P3.4,C1
+0074 30B523           72         JNB P3.5,C2
+0077 30B65E           73         JNB P3.6,C3
+007A 30B705           74         JNB P3.7,C4S
+007D BC00EF           75             CJNE R4,#0,M
+0080 2186             76             JMP CHE
+0082 2116             77     C4S:JMP C4
+                      78     
+0084 1C               79     C1: DEC R4
+0085 08               80             INC R0
+0086 D2B0             81             SETB P3.0
+0088 20B425           82             JB P3.4,SEVEN
+008B D2B1             83             SETB P3.1
+008D 20B42A           84             JB P3.4,FOUR
+0090 D2B2             85             SETB P3.2
+0092 20B42F           86             JB P3.4,ONE
+0095 D2B3             87             SETB P3.3
+0097 20B434           88             JB P3.4,STAR
+                      89     
+009A 1C               90     C2: DEC R4
+009B 08               91             INC R0
+009C D2B0             92             SETB P3.0
+009E 20B54D           93             JB P3.5,EIGHT
+00A1 D2B1             94             SETB P3.1
+00A3 20B552           95             JB P3.5,FIVE
+00A6 D2B2             96             SETB P3.2
+00A8 20B557           97             JB P3.5,TWO
+00AB D2B3             98             SETB P3.3
+00AD 20B55C           99             JB P3.5,ZERO
+                     100     
+00B0 7437            101     SEVEN: MOV A,#'7'
+00B2 113D            102                ACALL DAT
+00B4 1148            103                ACALL DEL
+00B6 7637            104                MOV @R0,#'7'
+00B8 217C            105                JMP H
+                     106     
+00BA 7434            107     FOUR:  MOV A,#'4'
+00BC 113D            108                ACALL DAT
+00BE 1148            109                ACALL DEL
+00C0 7634            110                MOV @R0,#'4'
+00C2 217C            111                JMP H
+                     112     
+00C4 7431            113     ONE:   MOV A,#'1'
+00C6 113D            114                ACALL DAT
+00C8 1148            115                ACALL DEL
+00CA 7631            116                MOV @R0,#'1'
+00CC 217C            117                JMP H
+                     118     
+00CE 742A            119     STAR:  MOV A,#'*'
+00D0 113D            120                ACALL DAT
+00D2 1148            121                ACALL DEL
+00D4 762A            122                MOV @R0,#'*'
+A51 MACRO ASSEMBLER  MAIN                                                                 07/10/2020 21:17:04 PAGE     3
+
+00D6 217C            123                JMP H
+00D8 1C              124     C3: DEC R4
+00D9 08              125             INC R0
+00DA D2B0            126             SETB P3.0
+00DC 20B64D          127             JB P3.6,NINE
+00DF D2B1            128             SETB P3.1
+00E1 20B652          129             JB P3.6,SIX
+00E4 D2B2            130             SETB P3.2
+00E6 20B657          131             JB P3.6,THREE
+00E9 D2B3            132             SETB P3.3
+00EB 20B65C          133             JB P3.6,HASH
+                     134     
+00EE 7438            135     EIGHT: MOV A,#'8'
+00F0 113D            136                ACALL DAT
+00F2 1148            137                ACALL DEL
+00F4 7638            138                MOV @R0,#'8'
+00F6 217C            139                JMP H
+                     140     
+00F8 7435            141     FIVE:  MOV A,#'5'
+00FA 113D            142                ACALL DAT
+00FC 1148            143                ACALL DEL
+00FE 7635            144                MOV @R0,#'5'
+0100 807A            145                SJMP H
+                     146     
+0102 7432            147     TWO:   MOV A,#'2'
+0104 113D            148                ACALL DAT
+0106 1148            149                ACALL DEL
+0108 7632            150                MOV @R0,#'2'
+010A 8070            151                SJMP H
+                     152     
+010C 7430            153     ZERO:  MOV A,#'0'
+010E 113D            154                ACALL DAT
+0110 1148            155                ACALL DEL
+0112 7630            156                MOV @R0,#'0'
+0114 8066            157                SJMP H
+                     158     
+0116 1C              159     C4: DEC R4
+0117 08              160             INC R0
+0118 D2B0            161             SETB P3.0
+011A 20B737          162             JB P3.7,AA
+011D D2B1            163             SETB P3.1
+011F 20B73C          164             JB P3.7,BB
+0122 D2B2            165             SETB P3.2
+0124 20B741          166             JB P3.7,CC
+0127 D2B3            167             SETB P3.3
+0129 20B746          168             JB P3.7,DD
+                     169     
+012C 7439            170     NINE:  MOV A,#'9'
+012E 113D            171                ACALL DAT
+0130 1148            172                ACALL DEL
+0132 7639            173                MOV @R0,#'9'
+0134 8046            174                SJMP H
+                     175     
+0136 7436            176     SIX:   MOV A,#'6'
+0138 113D            177                ACALL DAT
+013A 1148            178                ACALL DEL
+013C 7636            179                MOV @R0,#'6'
+013E 803C            180                SJMP H
+                     181     
+0140 7433            182     THREE: MOV A,#'3'
+0142 113D            183                ACALL DAT
+0144 1148            184                ACALL DEL
+0146 7633            185                MOV @R0,#'3'
+0148 8032            186                SJMP H
+                     187     
+014A 7423            188     HASH:  MOV A,#'#'
+A51 MACRO ASSEMBLER  MAIN                                                                 07/10/2020 21:17:04 PAGE     4
+
+014C 113D            189                ACALL DAT
+014E 1148            190                ACALL DEL
+0150 7623            191                MOV @R0,#'#'
+0152 8028            192                SJMP H
+                     193     
+0154 7441            194     AA:        MOV A,#'A'
+0156 113D            195                ACALL DAT
+0158 1148            196                ACALL DEL
+015A 7641            197            MOV @R0,#'A'
+015C 801E            198                SJMP H
+                     199     
+015E 7442            200     BB:        MOV A,#'B'
+0160 113D            201                ACALL DAT
+0162 1148            202                ACALL DEL
+0164 7642            203                MOV @R0,#'B'
+0166 8014            204                SJMP H
+                     205     
+0168 7443            206     CC:        MOV A,#'C'
+016A 113D            207                ACALL DAT
+016C 1148            208                ACALL DEL
+016E 7643            209                MOV @R0,#'C'
+0170 800A            210                SJMP H
+                     211     
+0172 7444            212     DD:        MOV A,#'D'
+0174 113D            213                ACALL DAT
+0176 1148            214                ACALL DEL
+0178 7644            215                MOV @R0,#'D'
+017A 8000            216                SJMP H
+                     217     
+                     218     
+017C C2B0            219     H: CLR P3.0
+017E C2B1            220        CLR P3.1
+0180 C2B2            221        CLR P3.2
+0182 C2B3            222        CLR P3.3
+0184 016F            223        JMP M
+                     224      
+                     225     
+0186 7401            226     CHE:MOV A,#01H
+0188 1132            227         ACALL CMD
+018A 7480            228         MOV A,#080H
+018C 1132            229         ACALL CMD
+018E 1148            230             ACALL DEL
+0190 782F            231             MOV R0,#02FH
+0192 793F            232             MOV R1,#03FH
+0194 7C04            233             MOV R4,#4
+                     234     
+0196 08              235     CH: INC R0
+0197 09              236             INC R1
+0198 E6              237             MOV A,@R0
+0199 87F0            238             MOV B,@R1
+019B B5F013          239             CJNE A,B,FA
+019E DCF6            240             DJNZ R4,CH
+01A0 7C07            241         MOV R4,#7 
+01A2 900600          242             MOV DPTR,#0600H
+01A5 7400            243     TH2:MOV A,#0
+01A7 93              244             MOVC A,@A+DPTR
+01A8 113D            245             ACALL DAT
+01AA A3              246             INC DPTR
+01AB DCF8            247             DJNZ R4,TH2
+01AD D2A2            248             SETB P2.2
+01AF 80FE            249     H2: SJMP H2
+                     250     
+01B1 7C07            251     FA: MOV R4,#7 
+01B3 900650          252             MOV DPTR,#0650H
+01B6 7400            253     TH3:MOV A,#0
+01B8 93              254             MOVC A,@A+DPTR
+A51 MACRO ASSEMBLER  MAIN                                                                 07/10/2020 21:17:04 PAGE     5
+
+01B9 113D            255             ACALL DAT
+01BB A3              256             INC DPTR
+01BC DCF8            257             DJNZ R4,TH3
+01BE 7C0A            258             MOV R4,#10
+01C0 1148            259     WA:     ACALL DEL
+01C2 DCFC            260             DJNZ R4,WA
+01C4 0100            261             JMP S 
+                     262     
+                     263     
+                     264     
+0500                 265     ORG 0500H
+0500 454E5445        266     DB "ENTER CODE:"
+0504 5220434F                
+0508 44453A                  
+                     267     
+0550                 268     ORG 0550H
+0550 31323334        269     DB "1234"
+                     270     
+0600                 271     ORG 0600H
+0600 53554343        272     DB "SUCCESS"
+0604 455353                  
+                     273     
+0650                 274     ORG 0650H
+0650 4641494C        275     DB "FAILURE"
+0654 555245                  
+                     276     
+                     277     END 
+A51 MACRO ASSEMBLER  MAIN                                                                 07/10/2020 21:17:04 PAGE     6
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AA . . . . . . . .  C ADDR   0154H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+BB . . . . . . . .  C ADDR   015EH   A   
+C1 . . . . . . . .  C ADDR   0084H   A   
+C2 . . . . . . . .  C ADDR   009AH   A   
+C3 . . . . . . . .  C ADDR   00D8H   A   
+C4 . . . . . . . .  C ADDR   0116H   A   
+C4S. . . . . . . .  C ADDR   0082H   A   
+CC . . . . . . . .  C ADDR   0168H   A   
+CH . . . . . . . .  C ADDR   0196H   A   
+CHE. . . . . . . .  C ADDR   0186H   A   
+CMD. . . . . . . .  C ADDR   0032H   A   
+D2 . . . . . . . .  C ADDR   004AH   A   
+D22. . . . . . . .  C ADDR   0053H   A   
+D3 . . . . . . . .  C ADDR   004CH   A   
+D33. . . . . . . .  C ADDR   0055H   A   
+DAT. . . . . . . .  C ADDR   003DH   A   
+DD . . . . . . . .  C ADDR   0172H   A   
+DEL. . . . . . . .  C ADDR   0048H   A   
+DEL2 . . . . . . .  C ADDR   0051H   A   
+EIGHT. . . . . . .  C ADDR   00EEH   A   
+FA . . . . . . . .  C ADDR   01B1H   A   
+FIVE . . . . . . .  C ADDR   00F8H   A   
+FOUR . . . . . . .  C ADDR   00BAH   A   
+H. . . . . . . . .  C ADDR   017CH   A   
+H2 . . . . . . . .  C ADDR   01AFH   A   
+HASH . . . . . . .  C ADDR   014AH   A   
+M. . . . . . . . .  C ADDR   006FH   A   
+NINE . . . . . . .  C ADDR   012CH   A   
+ONE. . . . . . . .  C ADDR   00C4H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+PRT. . . . . . . .  C ADDR   005AH   A   
+S. . . . . . . . .  C ADDR   0000H   A   
+SEVEN. . . . . . .  C ADDR   00B0H   A   
+SIX. . . . . . . .  C ADDR   0136H   A   
+STAR . . . . . . .  C ADDR   00CEH   A   
+TH . . . . . . . .  C ADDR   005FH   A   
+TH2. . . . . . . .  C ADDR   01A5H   A   
+TH3. . . . . . . .  C ADDR   01B6H   A   
+THREE. . . . . . .  C ADDR   0140H   A   
+TWO. . . . . . . .  C ADDR   0102H   A   
+WA . . . . . . . .  C ADDR   01C0H   A   
+Z. . . . . . . . .  C ADDR   0016H   A   
+ZERO . . . . . . .  C ADDR   010CH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
